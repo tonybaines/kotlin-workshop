@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Loops {
-    static List<String> rainbow = new ArrayList<>() {{
+    static List<String> rainbow = new ArrayList() {{
         add("red");
         add("orange");
         add("yellow");

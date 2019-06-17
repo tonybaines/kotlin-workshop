@@ -1,21 +1,27 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    // Apply the Kotlin JVM plugin to add support for Kotlin on the JVM
     kotlin("jvm") version "1.3.31"
 }
 repositories {
-    // Use jcenter for resolving your dependencies.
-    // You can declare any Maven/Ivy/file repository here.
     jcenter()
 }
 
 dependencies {
-    // Use the Kotlin JDK 8 standard library
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlin:kotlin-scripting-jvm")
+
+    testImplementation("org.junit.jupiter:junit-jupiter:5.4.2")
+    testImplementation("com.natpryce:hamkrest:1.7.0.0")
 }
 
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+    testLogging {
+        events("passed", "skipped", "failed")
+    }
+}
 
 val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions {
