@@ -9,31 +9,35 @@ import java.util.stream.Collectors;
 
 public class ToDoList {
     private static AtomicInteger NEXT_ID = new AtomicInteger(0);
-    private Set<ToDoItem> items = new TreeSet<ToDoItem>();
+    private Set<ToDoItem> items = new TreeSet<>();
 
-    public void add(String description) {
-        items.add(new ToDoItem(nextId(), description));
+    public ToDoItem add(String description) {
+        final ToDoItem item = new ToDoItem(nextId(), description);
+        items.add(item);
+        return item;
     }
 
     private static Integer nextId() {
         return NEXT_ID.incrementAndGet();
     }
 
-    public String prettyPrint() {
-        return items.stream().map(ToDoItem::prettyPrint).collect(Collectors.joining("\n"));
+    public void delete(String id) {
+        if (items.stream().anyMatch(item1 -> item1.id.equals(id))) {
+            items = items.stream().filter(item -> item.id.equals(id)).collect(Collectors.toSet());
+        } else throw new IllegalArgumentException("No item found with id " + id);
     }
 
-    private class ToDoItem implements Comparable<ToDoItem> {
-        private final Integer id;
-        private final String desciption;
+    public String prettyPrint() {
+        return items.stream().map(Helpers::prettyPrint).collect(Collectors.joining("\n"));
+    }
 
-        private ToDoItem(Integer id, String desciption) {
-            this.id = id;
-            this.desciption = desciption;
-        }
+    public class ToDoItem implements Comparable<ToDoItem> {
+        private final String id;
+        private final String description;
 
-        public String prettyPrint() {
-            return String.format("[%d] %s", id, desciption);
+        private ToDoItem(Integer id, String description) {
+            this.id = id.toString();
+            this.description = description;
         }
 
         @Override
@@ -52,6 +56,14 @@ public class ToDoList {
         @Override
         public int compareTo(@NotNull ToDoItem o) {
             return id.compareTo(o.id);
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public String getDescription() {
+            return description;
         }
     }
 }
