@@ -23,7 +23,8 @@ object AcceptanceTest {
     @Test
     fun `add a todo item`(){
         assertThat(toDo.read("add"), equalTo(ToDo.Prompts.ADD_PROMPT))
-        assertThat(toDo.read("First thing to do"), equalTo("[1] First thing to do"))
+        assertThat(toDo.read("First thing to do"), equalTo("Success"))
+        assertThat(toDo.read("list"), equalTo("[1] First thing to do"))
     }
 
     @Test

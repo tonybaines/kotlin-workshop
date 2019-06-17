@@ -20,7 +20,7 @@ public class ToDoList {
     }
 
     public String prettyPrint() {
-        return items.stream().map(item -> item.prettyPrint()).collect(Collectors.joining("\n"));
+        return items.stream().map(ToDoItem::prettyPrint).collect(Collectors.joining("\n"));
     }
 
     private class ToDoItem implements Comparable<ToDoItem> {
