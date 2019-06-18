@@ -12,6 +12,7 @@ public class ToDo {
 
     public static class Messages {
         public static final String SUCCESS = "Success";
+        public static final String FAILURE = "Failed";
     }
 
     private enum Modes {Waiting, Adding, Deleting;}
@@ -48,9 +49,13 @@ public class ToDo {
     }
 
     private String handleDeleting(String id) {
-        thingsToDo.delete(id);
-        mode = Modes.Waiting;
-        return Messages.SUCCESS;
+        try {
+            thingsToDo.delete(id);
+            mode = Modes.Waiting;
+            return Messages.SUCCESS;
+        } catch (ToDoList.NoSuchItemException e) {
+            return String.format("%s: No item with ID '%s'", Messages.FAILURE, id);
+        }
     }
 
     private String handleAdding(String input) {

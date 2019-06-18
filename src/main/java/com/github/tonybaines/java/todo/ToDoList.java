@@ -17,14 +17,16 @@ public class ToDoList {
         return item;
     }
 
+    public class NoSuchItemException extends Exception{}
+
     private static Integer nextId() {
         return NEXT_ID.incrementAndGet();
     }
 
-    public void delete(String id) {
+    public void delete(String id) throws NoSuchItemException {
         if (items.stream().anyMatch(item1 -> item1.id.equals(id))) {
-            items = items.stream().filter(item -> item.id.equals(id)).collect(Collectors.toSet());
-        } else throw new IllegalArgumentException("No item found with id " + id);
+            items = items.stream().filter(item -> !item.id.equals(id)).collect(Collectors.toSet());
+        } else throw new NoSuchItemException();
     }
 
     public String prettyPrint() {

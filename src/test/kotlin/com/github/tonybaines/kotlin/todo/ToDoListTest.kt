@@ -34,7 +34,7 @@ class ToDoListTest {
     @Test
     fun `cannot delete an ID that does not exist`() {
         assertThat(list.prettyPrint(), isEmptyString)
-        assertThrows<IllegalArgumentException> {
+        assertThrows<ToDoList.NoSuchItemException> {
             list.delete("1")
         }
     }
