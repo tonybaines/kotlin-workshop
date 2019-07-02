@@ -77,8 +77,12 @@ public class ToDo {
     }
 
     private String handleAdding(String input) {
-        String newItem = prettyPrint(thingsToDo.add(input));
-        mode = Modes.Waiting;
-        return String.format("%s - %s", Messages.SUCCESS, newItem);
+        if (input.trim().isEmpty()) {
+            return String.format("%s - the description cannot be blank", Messages.FAILURE);
+        } else {
+            String newItem = prettyPrint(thingsToDo.add(input));
+            mode = Modes.Waiting;
+            return String.format("%s - %s", Messages.SUCCESS, newItem);
+        }
     }
 }

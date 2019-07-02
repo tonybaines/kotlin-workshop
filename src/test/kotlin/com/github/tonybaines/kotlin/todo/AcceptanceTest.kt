@@ -8,29 +8,36 @@ import com.natpryce.hamkrest.isEmptyString
 import com.natpryce.hamkrest.startsWith
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 
 object AcceptanceTest {
-    lateinit var toDo : ToDo
+    lateinit var toDo: ToDo
     @BeforeEach
     fun setUp() {
         toDo = ToDo()
     }
 
     @Test
-    fun `show all todo items`(){
+    fun `show all todo items`() {
         assertThat(toDo.read("list"), isEmptyString)
     }
 
     @Test
-    fun `add a todo item`(){
+    fun `add a todo item`() {
         assertThat(toDo.read("add"), equalTo(ToDo.Prompts.ADD))
         assertThat(toDo.read("First thing to do"), startsWith(ToDo.Messages.SUCCESS))
         assertThat(toDo.read("list"), equalTo("[1] First thing to do"))
     }
 
     @Test
-    fun `remove a todo item by ID`(){
+    fun `rejects a task with no description`() {
+        assertThat(toDo.read("add"), equalTo(ToDo.Prompts.ADD))
+        assertThat(toDo.read(""), startsWith(ToDo.Messages.FAILURE))
+    }
+
+    @Test
+    fun `remove a todo item by ID`() {
         val id = Fixture.givenAnItemIsAdded("Todo 1")
 
         assertThat(toDo.read("delete"), equalTo(ToDo.Prompts.DELETE))
@@ -39,7 +46,13 @@ object AcceptanceTest {
     }
 
     @Test
-    fun `mark an item as complete`(){
+    fun `rejects a request to remove an unknown item`() {
+        toDo.read("delete")
+        assertThat(toDo.read("-99"), startsWith(ToDo.Messages.FAILURE))
+    }
+
+    @Test
+    fun `mark an item as complete`() {
         val id = Fixture.givenAnItemIsAdded("Todo 2")
 
         assertThat(toDo.read("complete"), equalTo(ToDo.Prompts.COMPLETE))
@@ -48,15 +61,20 @@ object AcceptanceTest {
     }
 
     @Test
-    fun `mark an item as high importance`(){
+    fun `rejects a request to update an unknown item`() {
+        toDo.read("complete")
+        assertThat(toDo.read("-99"), startsWith(ToDo.Messages.FAILURE))
     }
 
     @Test
-    fun `rejects a task with no description`(){
+    fun `mark an item as high importance`() {
     }
 
     @Test
-    fun `rejects an unknown command`(){
+    fun `rejects an unknown command`() {
+        assertThrows<UnsupportedOperationException> {
+            toDo.read("UNEXPECTED-ITEM")
+        }
     }
 
     object Fixture {
