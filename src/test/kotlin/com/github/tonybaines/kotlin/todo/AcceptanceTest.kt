@@ -2,6 +2,7 @@ package com.github.tonybaines.kotlin.todo
 
 import com.github.tonybaines.java.todo.ToDo
 import com.natpryce.hamkrest.assertion.assertThat
+import com.natpryce.hamkrest.containsSubstring
 import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.isEmptyString
 import com.natpryce.hamkrest.startsWith
@@ -39,6 +40,11 @@ object AcceptanceTest {
 
     @Test
     fun `mark an item as complete`(){
+        val id = Fixture.givenAnItemIsAdded("Todo 2")
+
+        assertThat(toDo.read("complete"), equalTo(ToDo.Prompts.COMPLETE))
+        assertThat(toDo.read(id), equalTo(ToDo.Messages.SUCCESS))
+        assertThat(toDo.read("list"), containsSubstring(String.format("[%s] Todo 2 (DONE)", id)))
     }
 
     @Test

@@ -8,6 +8,7 @@ public class ToDo {
     public static class Prompts {
         public static String ADD = "Please describe the item";
         public static String DELETE = "Please enter the ID number to delete";
+        public static String COMPLETE = "Please enter the ID number to complete";
     }
 
     public static class Messages {
@@ -15,12 +16,13 @@ public class ToDo {
         public static final String FAILURE = "Failed";
     }
 
-    private enum Modes {Waiting, Adding, Deleting;}
+    private enum Modes {Waiting, Adding, Deleting, Completing;}
 
     private static class Commands {
         static final String LIST = "list";
         static final String ADD = "add";
         static final String DELETE = "delete";
+        static final String COMPLETE = "complete";
     }
 
     public void exit() {
@@ -32,6 +34,8 @@ public class ToDo {
             return handleAdding(input);
         } else if (mode == Modes.Deleting) {
             return handleDeleting(input);
+        } else if (mode == Modes.Completing) {
+            return handleCompleting(input);
         } else {
             if (input.equalsIgnoreCase(Commands.LIST)) {
                 return thingsToDo.prettyPrint();
@@ -44,8 +48,22 @@ public class ToDo {
                 mode = Modes.Deleting;
                 return Prompts.DELETE;
             }
+            if (input.equalsIgnoreCase(Commands.COMPLETE)) {
+                mode = Modes.Completing;
+                return Prompts.COMPLETE;
+            }
         }
         throw new UnsupportedOperationException();
+    }
+
+    private String handleCompleting(String id) {
+        try {
+            thingsToDo.markComplete(id);
+            mode = Modes.Waiting;
+            return Messages.SUCCESS;
+        } catch (ToDoList.NoSuchItemException e) {
+            return String.format("%s: No item with ID '%s'", Messages.FAILURE, id);
+        }
     }
 
     private String handleDeleting(String id) {

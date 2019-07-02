@@ -17,7 +17,8 @@ public class ToDoList {
         return item;
     }
 
-    public class NoSuchItemException extends Exception{}
+    public class NoSuchItemException extends Exception {
+    }
 
     private static Integer nextId() {
         return NEXT_ID.incrementAndGet();
@@ -29,17 +30,37 @@ public class ToDoList {
         } else throw new NoSuchItemException();
     }
 
+    public void markComplete(String id) throws NoSuchItemException {
+        if (items.stream().anyMatch(item1 -> item1.id.equals(id))) {
+            items = items.stream()
+                    .map(item -> {
+                        if (item.id.equals(id)) {
+                            return item.copy().withCompletionStatus(true).done();
+                        } else {
+                            return item;
+                        }
+                    })
+                    .collect(Collectors.toSet());
+        } else throw new NoSuchItemException();
+    }
+
     public String prettyPrint() {
         return items.stream().map(Helpers::prettyPrint).collect(Collectors.joining("\n"));
     }
 
-    public class ToDoItem implements Comparable<ToDoItem> {
+    public static class ToDoItem implements Comparable<ToDoItem> {
         private final String id;
-        private final String description;
+        private String description;
+        private Boolean completed;
 
-        private ToDoItem(Integer id, String description) {
-            this.id = id.toString();
+        public ToDoItem(Integer id, String description) {
+            this(id.toString(), description, false);
+        }
+
+        public ToDoItem(String id, String description, Boolean completed) {
+            this.id = id;
             this.description = description;
+            this.completed = completed;
         }
 
         @Override
@@ -50,7 +71,7 @@ public class ToDoList {
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof ToDoItem) {
-                return id.equals(((ToDoItem)obj).id);
+                return id.equals(((ToDoItem) obj).id);
             }
             return false;
         }
@@ -66,6 +87,40 @@ public class ToDoList {
 
         public String getDescription() {
             return description;
+        }
+
+        public Boolean isCompleted() {
+            return completed;
+        }
+
+        public ToDoItem.Modifier copy() {
+            return new Modifier(this);
+        }
+
+        public static class Modifier {
+            private final ToDoItem item;
+            private String newDesc;
+            private Boolean newCompletion;
+
+            Modifier(ToDoItem item) {
+                this.item = item;
+                this.newDesc = item.description;
+                this.newCompletion = item.completed;
+            }
+
+            public Modifier withDescription(String description) {
+                newDesc = description;
+                return this;
+            }
+
+            public Modifier withCompletionStatus(Boolean completionStatus) {
+                newCompletion = completionStatus;
+                return this;
+            }
+
+            public ToDoItem done() {
+                return new ToDoItem(item.id, newDesc, newCompletion);
+            }
         }
     }
 }
