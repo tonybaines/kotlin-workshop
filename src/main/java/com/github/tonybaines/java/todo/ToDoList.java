@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ToDoList {
@@ -15,6 +16,12 @@ public class ToDoList {
         final ToDoItem item = new ToDoItem(nextId(), description);
         items.add(item);
         return item;
+    }
+
+    public void verifyExists(String id) throws NoSuchItemException {
+        if (items.stream().noneMatch(item1 -> item1.id.equals(id))) {
+            throw new NoSuchItemException();
+        }
     }
 
     public class NoSuchItemException extends Exception {
@@ -31,11 +38,19 @@ public class ToDoList {
     }
 
     public void markComplete(String id) throws NoSuchItemException {
+        updateItem(id, (item) -> item.copy().withCompletionStatus(true).done());
+    }
+
+    public void reword(String id, String newDesc) throws NoSuchItemException {
+        updateItem(id, (item) -> item.copy().withDescription(newDesc).done());
+    }
+
+    private void updateItem(String id, Function<ToDoItem, ToDoItem> update) throws NoSuchItemException {
         if (items.stream().anyMatch(item1 -> item1.id.equals(id))) {
             items = items.stream()
                     .map(item -> {
                         if (item.id.equals(id)) {
-                            return item.copy().withCompletionStatus(true).done();
+                            return update.apply(item);
                         } else {
                             return item;
                         }

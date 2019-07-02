@@ -61,6 +61,16 @@ object AcceptanceTest {
     }
 
     @Test
+    fun `reword an item description`() {
+        val id = Fixture.givenAnItemIsAdded("Todo 2")
+
+        assertThat(toDo.read("reword"), equalTo(ToDo.Prompts.REWORD))
+        assertThat(toDo.read(id), equalTo(ToDo.Prompts.REWORD_TEXT))
+        assertThat(toDo.read("Todo 3 (was Todo 2)"), equalTo(ToDo.Messages.SUCCESS))
+        assertThat(toDo.read("list"), containsSubstring(String.format("[%s] Todo 3 (was Todo 2)", id)))
+    }
+
+    @Test
     fun `rejects a request to update an unknown item`() {
         toDo.read("complete")
         assertThat(toDo.read("-99"), startsWith(ToDo.Messages.FAILURE))
