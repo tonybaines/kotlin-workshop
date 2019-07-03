@@ -106,7 +106,7 @@ public class ToDo {
 
     private String handleDeleting(String id) {
         return handlingBadId(id, it -> {
-            thingsToDo.delete(it);
+            thingsToDo.delete(ToDoList.Id.from(it));
             mode = new Modes.Waiting();
             return Messages.SUCCESS;
         });
@@ -114,7 +114,7 @@ public class ToDo {
 
     private String handleCompleting(String id) {
         return handlingBadId(id, it -> {
-            thingsToDo.markComplete(id);
+            thingsToDo.markComplete(ToDoList.Id.from(id));
             mode = new Modes.Waiting();
             return Messages.SUCCESS;
         });
@@ -123,7 +123,7 @@ public class ToDo {
     private String handleRewordText(String newDesc) {
         final String id = ((Modes.RewordingText) mode).id;
         return handlingBadId(id, it -> {
-            thingsToDo.reword(id, newDesc);
+            thingsToDo.reword(ToDoList.Id.from(it), newDesc);
             mode = new Modes.Waiting();
             return Messages.SUCCESS;
         });
@@ -131,7 +131,7 @@ public class ToDo {
 
     private String handleRewordSelection(String id) {
         return handlingBadId(id, it -> {
-            thingsToDo.verifyExists(id);
+            thingsToDo.verifyExists(ToDoList.Id.from(it));
             mode = new Modes.RewordingText(id);
             return Prompts.REWORD_TEXT;
         });

@@ -16,7 +16,7 @@ class ToDoListTest {
         assertThat(list.prettyPrint(), isEmptyString)
 
         val added = list.add("Test 1")
-        assertThat(added.id, matches("""[0-9]+""".toRegex()))
+        assertThat(added.id.toString(), matches("""[0-9]+""".toRegex()))
         assertThat(added.description, equalTo("Test 1"))
     }
 
@@ -35,7 +35,7 @@ class ToDoListTest {
     fun `cannot delete an ID that does not exist`() {
         assertThat(list.prettyPrint(), isEmptyString)
         assertThrows<ToDoList.NoSuchItemException> {
-            list.delete("1")
+            list.delete(ToDoList.Id.nextId())
         }
     }
 }

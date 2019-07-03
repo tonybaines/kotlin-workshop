@@ -13,12 +13,12 @@ public class ToDoList {
     private Set<ToDoItem> items = new TreeSet<>();
 
     public ToDoItem add(String description) {
-        final ToDoItem item = new ToDoItem(nextId(), description);
+        final ToDoItem item = new ToDoItem(Id.nextId(), description);
         items.add(item);
         return item;
     }
 
-    public void verifyExists(String id) throws NoSuchItemException {
+    void verifyExists(Id id) throws NoSuchItemException {
         if (items.stream().noneMatch(item1 -> item1.id.equals(id))) {
             throw new NoSuchItemException();
         }
@@ -27,25 +27,61 @@ public class ToDoList {
     public class NoSuchItemException extends Exception {
     }
 
-    private static Integer nextId() {
-        return NEXT_ID.incrementAndGet();
+    public static class Id implements Comparable<Id> {
+        private final String id;
+
+        private Id(Integer id) {
+            this.id = id.toString();
+        }
+
+        Id(String id) {
+            this.id = id;
+        }
+
+        public static Id nextId() {
+            return new Id(NEXT_ID.incrementAndGet());
+        }
+
+        public static Id from(String id) {
+            return new Id(id);
+        }
+
+        @Override
+        public int compareTo(@NotNull Id o) {
+            return id.compareTo(o.id);
+        }
+
+        @Override
+        public String toString() {
+            return id;
+        }
+
+        @Override
+        public int hashCode() {
+            return id.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return (obj instanceof Id) && id.equals(((Id)obj).id);
+        }
     }
 
-    public void delete(String id) throws NoSuchItemException {
+    public void delete(Id id) throws NoSuchItemException {
         if (items.stream().anyMatch(item1 -> item1.id.equals(id))) {
             items = items.stream().filter(item -> !item.id.equals(id)).collect(Collectors.toSet());
         } else throw new NoSuchItemException();
     }
 
-    public void markComplete(String id) throws NoSuchItemException {
+    void markComplete(Id id) throws NoSuchItemException {
         updateItem(id, (item) -> item.copy().withCompletionStatus(true).done());
     }
 
-    public void reword(String id, String newDesc) throws NoSuchItemException {
+    void reword(Id id, String newDesc) throws NoSuchItemException {
         updateItem(id, (item) -> item.copy().withDescription(newDesc).done());
     }
 
-    private void updateItem(String id, Function<ToDoItem, ToDoItem> update) throws NoSuchItemException {
+    private void updateItem(Id id, Function<ToDoItem, ToDoItem> update) throws NoSuchItemException {
         if (items.stream().anyMatch(item1 -> item1.id.equals(id))) {
             items = items.stream()
                     .map(item -> {
@@ -64,15 +100,15 @@ public class ToDoList {
     }
 
     public static class ToDoItem implements Comparable<ToDoItem> {
-        private final String id;
+        private final Id id;
         private String description;
         private Boolean completed;
 
-        public ToDoItem(Integer id, String description) {
-            this(id.toString(), description, false);
+        public ToDoItem(Id id, String description) {
+            this(id, description, false);
         }
 
-        public ToDoItem(String id, String description, Boolean completed) {
+        public ToDoItem(Id id, String description, Boolean completed) {
             this.id = id;
             this.description = description;
             this.completed = completed;
@@ -96,7 +132,7 @@ public class ToDoList {
             return id.compareTo(o.id);
         }
 
-        public String getId() {
+        public Id getId() {
             return id;
         }
 
@@ -104,7 +140,7 @@ public class ToDoList {
             return description;
         }
 
-        public Boolean isCompleted() {
+        Boolean isCompleted() {
             return completed;
         }
 
