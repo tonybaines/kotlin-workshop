@@ -5,7 +5,6 @@ import com.natpryce.hamkrest.*
 import com.natpryce.hamkrest.assertion.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 
 
 object AcceptanceTest {
@@ -83,9 +82,7 @@ object AcceptanceTest {
 
     @Test
     fun `rejects an unknown command`() {
-        assertThrows<UnsupportedOperationException> {
-            toDo.read("UNEXPECTED-ITEM")
-        }
+        assertThat(toDo.read("UNEXPECTED-ITEM"), startsWith("Unrecognised command"));
     }
 
     object Fixture {

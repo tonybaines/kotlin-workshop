@@ -101,7 +101,7 @@ public class ToDo {
                 return exit();
             }
         }
-        throw new UnsupportedOperationException();
+        return String.format("Unrecognised command: '%s'.  Type 'help' for a list of commands", input);
     }
 
     private String handleAdding(String input) {
@@ -151,13 +151,13 @@ public class ToDo {
     @FunctionalInterface
     interface ThrowingFunction {
         String apply(String id) throws ToDoList.NoSuchItemException;
-
     }
 
     private String handlingBadId(String id, ThrowingFunction op) {
         try {
             return op.apply(id);
         } catch (ToDoList.NoSuchItemException e) {
+            mode = new Modes.Waiting();
             return String.format("%s: No item with ID '%s'", Messages.FAILURE, id);
         }
     }

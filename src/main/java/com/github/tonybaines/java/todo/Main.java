@@ -1,22 +1,19 @@
 package com.github.tonybaines.java.todo;
 
-import java.io.PrintWriter;
+import java.io.PrintStream;
+import java.util.Scanner;
 
-/**
- * Will not work from an IDE!
- * Build the JAR
- *  $ ./gradlew jar
- * run the application
- *  $ java -jar build/libs/kotlin-workshop.jar
- */
 public class Main {
     public static void main(String[] args) {
         final ToDo toDo = new ToDo();
 
-        while(true) {
-            final PrintWriter writer = System.console().writer();
-            final String response = toDo.read(System.console().readLine(""));
+        final PrintStream writer = System.out;
+        final Scanner lineReader = new Scanner(System.in);
 
+        writer.println("Welcome to 2 Do.0");
+        writer.println("Type 'help' for a list of commands");
+        while(true) {
+            final String response = toDo.read(lineReader.next().trim());
             if (response.equalsIgnoreCase(ToDo.Commands.EXIT.name())) break;
             writer.println(response);
         }

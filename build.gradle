@@ -22,6 +22,9 @@ jar {
                 'Main-Class': 'com.github.tonybaines.java.todo.Main'
         )
     }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
 
 tasks.withType(Test) {
