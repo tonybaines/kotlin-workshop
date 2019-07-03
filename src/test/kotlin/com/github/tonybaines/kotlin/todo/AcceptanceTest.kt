@@ -77,10 +77,6 @@ object AcceptanceTest {
     }
 
     @Test
-    fun `mark an item as high importance`() {
-    }
-
-    @Test
     fun `rejects an unknown command`() {
         assertThrows<UnsupportedOperationException> {
             toDo.read("UNEXPECTED-ITEM")
