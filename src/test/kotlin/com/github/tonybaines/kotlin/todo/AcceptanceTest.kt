@@ -1,11 +1,8 @@
 package com.github.tonybaines.kotlin.todo
 
 import com.github.tonybaines.java.todo.ToDo
+import com.natpryce.hamkrest.*
 import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.containsSubstring
-import com.natpryce.hamkrest.equalTo
-import com.natpryce.hamkrest.isEmptyString
-import com.natpryce.hamkrest.startsWith
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -19,8 +16,16 @@ object AcceptanceTest {
     }
 
     @Test
-    fun `show all todo items`() {
-        assertThat(toDo.read("list"), isEmptyString)
+    fun `show a list of commands`() {
+        assertThat(toDo.read("help").split('\n'),
+                hasElement("list") and
+                hasElement("add") and
+                hasElement("delete") and
+                hasElement("complete") and
+                hasElement("reword") and
+                hasElement("help") and
+                hasElement("exit")
+        )
     }
 
     @Test

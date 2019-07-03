@@ -1,5 +1,9 @@
 package com.github.tonybaines.java.todo;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import static com.github.tonybaines.java.todo.Helpers.prettyPrint;
 
 public class ToDo {
@@ -47,16 +51,16 @@ public class ToDo {
         }
     }
 
-    private static class Commands {
-        static final String LIST = "list";
-        static final String ADD = "add";
-        static final String DELETE = "delete";
-        static final String COMPLETE = "complete";
-        static final String REWORD = "reword";
+    enum Commands {
+        LIST, ADD, DELETE, COMPLETE, REWORD, HELP, EXIT;
+
+        public static List list() {
+            return Stream.of(values()).map(c -> c.name().toLowerCase()).collect(Collectors.toList());
+        }
     }
 
-    public void exit() {
-        throw new UnsupportedOperationException();
+    public String exit() {
+        return Commands.EXIT.toString();
     }
 
     public String read(String input) {
@@ -71,24 +75,30 @@ public class ToDo {
         } else if (mode instanceof Modes.RewordingText) {
             return handleRewordText(input);
         } else {
-            if (input.equalsIgnoreCase(Commands.LIST)) {
+            if (input.equalsIgnoreCase(Commands.LIST.name())) {
                 return thingsToDo.prettyPrint();
             }
-            if (input.equalsIgnoreCase(Commands.ADD)) {
+            if (input.equalsIgnoreCase(Commands.ADD.name())) {
                 mode = new Modes.Adding();
                 return Prompts.ADD;
             }
-            if (input.equalsIgnoreCase(Commands.DELETE)) {
+            if (input.equalsIgnoreCase(Commands.DELETE.name())) {
                 mode = new Modes.Deleting();
                 return Prompts.DELETE;
             }
-            if (input.equalsIgnoreCase(Commands.COMPLETE)) {
+            if (input.equalsIgnoreCase(Commands.COMPLETE.name())) {
                 mode = new Modes.Completing();
                 return Prompts.COMPLETE;
             }
-            if (input.equalsIgnoreCase(Commands.REWORD)) {
+            if (input.equalsIgnoreCase(Commands.REWORD.name())) {
                 mode = new Modes.RewordingSelect();
                 return Prompts.REWORD;
+            }
+            if (input.equalsIgnoreCase(Commands.HELP.name())) {
+                return Commands.list().stream().collect(Collectors.joining("\n")).toString();
+            }
+            if (input.equalsIgnoreCase(Commands.EXIT.name())) {
+                return exit();
             }
         }
         throw new UnsupportedOperationException();
