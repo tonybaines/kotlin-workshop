@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+owner=$(id -u $USER)
+source=$(basename "$PWD")
+docker run --rm -v $(pwd):/documents/ asciidoctor/docker-asciidoctor bash -c "asciidoctor-revealjs -r asciidoctor-diagram $source.adoc ; chown $owner:$owner *.html"

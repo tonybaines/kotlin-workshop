@@ -1,0 +1,126 @@
+= Kotlin Workshop
+2019-07-04
+:revnumber: {project-version}
+ifndef::imagesdir[:imagesdir: images]
+ifndef::sourcedir[:sourcedir: src]
+:source-highlighter: highlightjs
+:icons: font
+:revealjs_theme: sky
+:revealjs_slideNumber: h.v
+
+== Basics
+
+* Statically typed
+* Java interoperability
+* No semicolon necessary
+* No `new`
+
+
+== Types
+
+* Everything is an Object
+** No such thing as `int`, `long`, ...
+
+[source,java]
+2.until(10) // 2..9
+
+== Strings
+=== Interpolation
+
+[source,java]
+----
+"Hello World! It's ${Clock.systemUTC().instant()}"
+// "Hello World! It's 2019-06-15T13:41:09.090739Z"
+----
+
+
+=== Multiline
+[source,java]
+----
+"""
+    The quick brown
+    fox jumped over
+    the lazy dog.
+""".trimIndent()
+//The quick brown
+//fox jumped over
+//the lazy dog.
+----
+
+
+=== Collections
+
+[source,java]
+listOf("foo", "bar", "baz", "bang")
+
+[source,java]
+mapOf(42 to "Forty-two", 12 to "Twelve")
+
+
+=== Equality & Identity
+
+== Declarations
+
+=== `val` & `var`
+
+* *Values* are immutable
+
+[source,java]
+----
+val foo = 42
+foo++ // compilation error
+----
+
+* *Variables* can change
+[source,java]
+----
+var bar = 42
+bar++ // OK
+----
+
+=== Null Safety
+
+[source,java]
+----
+val s: String = null // compliation error
+val s: String? = null // OK
+----
+
+== Expressions vs. Statements
+
+=== `if` expression
+=== `when` expression
+
+== Classes
+
+[source,java]
+----
+enum class Breed {Mongrel, Dalmation, Labrador}
+
+class Dog(val breed: Breed, var weight: Double)
+
+val fido = Dog(Breed.Mongrel, 1.9)
+fido.breed = Breed.Dalmation // compilation error
+fido.weight = 2.0 // OK
+
+fido.breed // Mongrel
+----
+
+=== Data Classes
+
+=== Sealed Classes
+
+=== Objects
+
+== Exceptions
+
+== Functions
+
+=== Named & Default Arguments
+
+== Standard Functions
+* Many extra methods on top of Java standard library
+
+=== `apply{}`
+
+== Extension Functions
