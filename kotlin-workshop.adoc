@@ -78,6 +78,23 @@ var bar = 42
 bar++ // OK
 ----
 
+=== Type Inference
+
+Java 11
+[source,java]
+----
+var                        doubleIt = (var x) -> x + 2; // compilation error
+Function<Integer, Integer> doubleIt = (var x) -> x + 2;
+----
+
+Kotlin
+[source,java]
+----
+var double = {x: Int -> x * 2}
+----
+
+=== Smart Casts
+
 === Null Safety
 
 [source,java]
